@@ -1,4 +1,5 @@
 import csv
+import os
 
 experienced_players = []
 inexperienced_players = []
@@ -8,13 +9,13 @@ dragons = []
 number_of_teams = 3
 
 def read_csv():
+    """Reads in data from a csv file and sorts the players in to two difference lists based on experience level"""
     with open("soccer_players.csv") as csv_file:
         players_reader = csv.reader(csv_file, delimiter=",")
         rows = list(players_reader)
         counter = 0
         for row in rows:
             if counter == 0:
-                #print(', '.join(row))
                 counter += 1
             elif row[2] == 'YES':
                 experienced_players.append(row)
@@ -27,8 +28,7 @@ def read_csv():
 
 
 def create_teams():
-    """Each team will get 6 players, with an even number of experienced players on each team.
-    """
+    """Each team gets 6 players, with an even number of experienced players on each team."""
     total_players = len(experienced_players) + len(inexperienced_players)
     players_per_team = total_players / number_of_teams
     i = 0
@@ -42,16 +42,18 @@ def create_teams():
 
 
 def add_players_to_team(team):
+    """Takes the last player in the sorted lists and adds them to one of the 3 teams."""
     team.append(experienced_players.pop())
     team.append(inexperienced_players.pop())
 
 
 def create_roster_file():
     """Create a text file named teams.txt that includes the name of a team, followed by the players on that team. 
-    List all three teams and their players. Provide the player name, parent/gaurdian name, and if they are experienced"""
-    #loop over each team
-
-    #write the names an teams in that file
+        List all three teams and their players. Provide the player name, parent/gaurdian name, and if they are experienced.
+        Also removes the teams.txt file if it already exists to start from scratch.
+    """
+    if os.path.exists('teams.txt'):
+        os.remove('teams.txt')
     file = open('teams.txt', 'a')
     file.write(file_content(raptors, 'raptors'))
     file.write(file_content(sharks, 'sharks'))
@@ -59,6 +61,7 @@ def create_roster_file():
 
 
 def file_content(team, team_name):
+    """Loops over each team and creates the text to be written in the teams.txt file"""
     string = ''
     string += '{} \n'.format(team_name.upper())
     string += '-'*20
